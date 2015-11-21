@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/user"
 	"path"
 	"sync"
 
@@ -37,7 +38,7 @@ type systemdUnitManager struct {
 }
 
 func NewSystemdUnitManager(uDir string) (*systemdUnitManager, error) {
-	systemd, err := dbus.New()
+	systemd, err := createDbusConnection()
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +59,17 @@ func NewSystemdUnitManager(uDir string) (*systemdUnitManager, error) {
 		mutex:    sync.RWMutex{},
 	}
 	return &mgr, nil
+}
+
+func createDbusConnection() (*dbus.Conn, error) {
+	u, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	if u.Uid == "0" {
+		return dbus.New()
+	}
+	return dbus.NewUserConnection()
 }
 
 func hashUnitFiles(dir string) (map[string]unit.Hash, error) {
