@@ -33,6 +33,7 @@ type Config struct {
 	TokenLimit              int
 	DisableEngine           bool
 	VerifyUnits             bool
+	UnitsDirectory          string
 	AuthorizedKeysFile      string
 }
 
