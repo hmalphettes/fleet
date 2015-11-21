@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"path"
 	"sync"
 
@@ -37,8 +36,8 @@ type systemdUnitManager struct {
 	mutex  sync.RWMutex
 }
 
-func NewSystemdUnitManager(uDir string) (*systemdUnitManager, error) {
-	systemd, err := createDbusConnection()
+func NewSystemdUnitManager(uDir string, systemBus bool) (*systemdUnitManager, error) {
+	systemd, err := createDbusConnection(systemBus)
 	if err != nil {
 		return nil, err
 	}
@@ -61,12 +60,8 @@ func NewSystemdUnitManager(uDir string) (*systemdUnitManager, error) {
 	return &mgr, nil
 }
 
-func createDbusConnection() (*dbus.Conn, error) {
-	u, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-	if u.Uid == "0" {
+func createDbusConnection(systemBus bool) (*dbus.Conn, error) {
+	if systemBus {
 		return dbus.New()
 	}
 	return dbus.NewUserConnection()

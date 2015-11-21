@@ -81,6 +81,7 @@ func main() {
 	cfgset.String("metadata", "", "List of key-value metadata to assign to the fleet machine")
 	cfgset.String("agent_ttl", agent.DefaultTTL, "TTL in seconds of fleet machine state in etcd")
 	cfgset.String("units_directory", "/run/fleet/units/", "Path to the fleet units directory")
+	cfgset.Bool("system_bus", true, "Use the system bus; When false use the user (systemd --user)")
 	cfgset.Int("token_limit", 100, "Maximum number of entries per page returned from API requests")
 	cfgset.Bool("disable_engine", false, "Disable the engine entirely, use with care")
 	cfgset.Bool("verify_units", false, "DEPRECATED - This option is ignored")
